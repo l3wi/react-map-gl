@@ -1,17 +1,17 @@
-import {PureComponent, createElement} from 'react';
-import PropTypes from 'prop-types';
-import autobind from '../utils/autobind';
+import { PureComponent, createElement } from 'react'
+import PropTypes from 'prop-types'
+import autobind from '../utils/autobind'
 
-import StaticMap from './static-map';
-import {MAPBOX_LIMITS} from '../utils/map-state';
-import WebMercatorViewport from 'viewport-mercator-project';
+import StaticMap from './static-map'
+import { MAPBOX_LIMITS } from '../utils/map-state'
+import WebMercatorViewport from 'viewport-mercator-project'
 
-import TransitionManager from '../utils/transition-manager';
+import TransitionManager from '../utils/transition-manager'
 
-import {EventManager} from 'mjolnir.js';
-import MapControls from '../utils/map-controls';
-import config from '../config';
-import deprecateWarn from '../utils/deprecate-warn';
+import { EventManager } from '../mjolnir.js/src/index.js'
+import MapControls from '../utils/map-controls'
+import config from '../config'
+import deprecateWarn from '../utils/deprecate-warn'
 
 const propTypes = Object.assign({}, StaticMap.propTypes, {
   // Additional props on top of StaticMap
@@ -61,31 +61,31 @@ const propTypes = Object.assign({}, StaticMap.propTypes, {
   // Keyboard
   keyboard: PropTypes.bool,
 
- /**
-    * Called when the map is hovered over.
-    * @callback
-    * @param {Object} event - The mouse event.
-    * @param {[Number, Number]} event.lngLat - The coordinates of the pointer
-    * @param {Array} event.features - The features under the pointer, using Mapbox's
-    * queryRenderedFeatures API:
-    * https://www.mapbox.com/mapbox-gl-js/api/#Map#queryRenderedFeatures
-    * To make a layer interactive, set the `interactive` property in the
-    * layer style to `true`. See Mapbox's style spec
-    * https://www.mapbox.com/mapbox-gl-style-spec/#layer-interactive
-    */
+  /**
+   * Called when the map is hovered over.
+   * @callback
+   * @param {Object} event - The mouse event.
+   * @param {[Number, Number]} event.lngLat - The coordinates of the pointer
+   * @param {Array} event.features - The features under the pointer, using Mapbox's
+   * queryRenderedFeatures API:
+   * https://www.mapbox.com/mapbox-gl-js/api/#Map#queryRenderedFeatures
+   * To make a layer interactive, set the `interactive` property in the
+   * layer style to `true`. See Mapbox's style spec
+   * https://www.mapbox.com/mapbox-gl-style-spec/#layer-interactive
+   */
   onHover: PropTypes.func,
   /**
-    * Called when the map is clicked.
-    * @callback
-    * @param {Object} event - The mouse event.
-    * @param {[Number, Number]} event.lngLat - The coordinates of the pointer
-    * @param {Array} event.features - The features under the pointer, using Mapbox's
-    * queryRenderedFeatures API:
-    * https://www.mapbox.com/mapbox-gl-js/api/#Map#queryRenderedFeatures
-    * To make a layer interactive, set the `interactive` property in the
-    * layer style to `true`. See Mapbox's style spec
-    * https://www.mapbox.com/mapbox-gl-style-spec/#layer-interactive
-    */
+   * Called when the map is clicked.
+   * @callback
+   * @param {Object} event - The mouse event.
+   * @param {[Number, Number]} event.lngLat - The coordinates of the pointer
+   * @param {Array} event.features - The features under the pointer, using Mapbox's
+   * queryRenderedFeatures API:
+   * https://www.mapbox.com/mapbox-gl-js/api/#Map#queryRenderedFeatures
+   * To make a layer interactive, set the `interactive` property in the
+   * layer style to `true`. See Mapbox's style spec
+   * https://www.mapbox.com/mapbox-gl-style-spec/#layer-interactive
+   */
   onClick: PropTypes.func,
 
   /** Radius to detect features around a clicked point. Defaults to 0. */
@@ -110,14 +110,18 @@ const propTypes = Object.assign({}, StaticMap.propTypes, {
     events: PropTypes.arrayOf(PropTypes.string),
     handleEvent: PropTypes.func
   })
-});
+})
 
-const getDefaultCursor = ({isDragging, isHovering}) => isDragging ?
-  config.CURSOR.GRABBING :
-  (isHovering ? config.CURSOR.POINTER : config.CURSOR.GRAB);
+const getDefaultCursor = ({ isDragging, isHovering }) =>
+  isDragging
+    ? config.CURSOR.GRABBING
+    : isHovering ? config.CURSOR.POINTER : config.CURSOR.GRAB
 
-const defaultProps = Object.assign({},
-  StaticMap.defaultProps, MAPBOX_LIMITS, TransitionManager.defaultProps,
+const defaultProps = Object.assign(
+  {},
+  StaticMap.defaultProps,
+  MAPBOX_LIMITS,
+  TransitionManager.defaultProps,
   {
     onViewportChange: null,
     onClick: null,
@@ -134,50 +138,49 @@ const defaultProps = Object.assign({},
 
     visibilityConstraints: MAPBOX_LIMITS
   }
-);
+)
 
 const childContextTypes = {
   viewport: PropTypes.instanceOf(WebMercatorViewport),
   isDragging: PropTypes.bool,
   eventManager: PropTypes.object
-};
+}
 
 export default class InteractiveMap extends PureComponent {
-
   static supported() {
-    return StaticMap.supported();
+    return StaticMap.supported()
   }
 
   constructor(props) {
-    super(props);
-    autobind(this);
+    super(props)
+    autobind(this)
     // Check for deprecated props
-    deprecateWarn(props);
+    deprecateWarn(props)
 
     this.state = {
       // Whether the cursor is down
       isDragging: false,
       // Whether the cursor is over a clickable feature
       isHovering: false
-    };
+    }
 
     // If props.mapControls is not provided, fallback to default MapControls instance
     // Cannot use defaultProps here because it needs to be per map instance
-    this._mapControls = props.mapControls || new MapControls();
+    this._mapControls = props.mapControls || new MapControls()
 
     // provide an eventManager stub until real eventManager created
     const eventManagerStub = {
       queue: [],
       on(events, ref) {
-        this.queue.push({events, ref, on: true});
+        this.queue.push({ events, ref, on: true })
       },
       off(events) {
-        this.queue.push({events});
+        this.queue.push({ events })
       },
       destroy() {}
-    };
+    }
 
-    this._eventManager = eventManagerStub;
+    this._eventManager = eventManagerStub
   }
 
   getChildContext() {
@@ -185,171 +188,194 @@ export default class InteractiveMap extends PureComponent {
       viewport: new WebMercatorViewport(this.props),
       isDragging: this.state.isDragging,
       eventManager: this._eventManager
-    };
+    }
   }
 
   componentDidMount() {
-    const eventManager = new EventManager(this._eventCanvas, {rightButton: true});
+    const eventManager = new EventManager(this._eventCanvas, {
+      rightButton: true
+    })
 
     // Register additional event handlers for click and hover
-    eventManager.on('mousemove', this._onMouseMove);
-    eventManager.on('click', this._onMouseClick);
+    eventManager.on('mousemove', this._onMouseMove)
+    eventManager.on('click', this._onMouseClick)
 
     // run stub queued action
-    this._eventManager.queue.forEach(({events, ref, on}) => {
+    this._eventManager.queue.forEach(({ events, ref, on }) => {
       if (on === true) {
-        eventManager.on(events, ref);
+        eventManager.on(events, ref)
       } else {
-        eventManager.off(events);
+        eventManager.off(events)
       }
-    });
+    })
 
-    this._eventManager = eventManager;
+    this._eventManager = eventManager
 
-    this._mapControls.setOptions(Object.assign({}, this.props, {
-      onStateChange: this._onInteractiveStateChange,
-      eventManager
-    }));
+    this._mapControls.setOptions(
+      Object.assign({}, this.props, {
+        onStateChange: this._onInteractiveStateChange,
+        eventManager
+      })
+    )
 
-    this._transitionManager = new TransitionManager(this.props);
+    this._transitionManager = new TransitionManager(this.props)
   }
 
   componentWillUpdate(nextProps) {
-    this._mapControls.setOptions(nextProps);
-    this._transitionManager.processViewportChange(nextProps);
+    this._mapControls.setOptions(nextProps)
+    this._transitionManager.processViewportChange(nextProps)
   }
 
   componentWillUnmount() {
     if (this._eventManager) {
       // Must destroy because hammer adds event listeners to window
-      this._eventManager.destroy();
+      this._eventManager.destroy()
     }
   }
 
   getMap() {
-    return this._map.getMap();
+    return this._map.getMap()
   }
 
   queryRenderedFeatures(geometry, options) {
-    return this._map.queryRenderedFeatures(geometry, options);
+    return this._map.queryRenderedFeatures(geometry, options)
   }
 
   // Checks a visibilityConstraints object to see if the map should be displayed
   _checkVisibilityConstraints(props) {
-    const capitalize = s => s[0].toUpperCase() + s.slice(1);
+    const capitalize = s => s[0].toUpperCase() + s.slice(1)
 
-    const {visibilityConstraints} = props;
+    const { visibilityConstraints } = props
     for (const propName in props) {
-      const capitalizedPropName = capitalize(propName);
-      const minPropName = `min${capitalizedPropName}`;
-      const maxPropName = `max${capitalizedPropName}`;
+      const capitalizedPropName = capitalize(propName)
+      const minPropName = `min${capitalizedPropName}`
+      const maxPropName = `max${capitalizedPropName}`
 
-      if (minPropName in visibilityConstraints &&
-        props[propName] < visibilityConstraints[minPropName]) {
-        return false;
+      if (
+        minPropName in visibilityConstraints &&
+        props[propName] < visibilityConstraints[minPropName]
+      ) {
+        return false
       }
-      if (maxPropName in visibilityConstraints &&
-        props[propName] > visibilityConstraints[maxPropName]) {
-        return false;
+      if (
+        maxPropName in visibilityConstraints &&
+        props[propName] > visibilityConstraints[maxPropName]
+      ) {
+        return false
       }
     }
-    return true;
+    return true
   }
 
-  _getFeatures({pos, radius}) {
-    let features;
+  _getFeatures({ pos, radius }) {
+    let features
     if (radius) {
       // Radius enables point features, like marker symbols, to be clicked.
-      const size = radius;
-      const bbox = [[pos[0] - size, pos[1] + size], [pos[0] + size, pos[1] - size]];
-      features = this._map.queryRenderedFeatures(bbox);
+      const size = radius
+      const bbox = [
+        [pos[0] - size, pos[1] + size],
+        [pos[0] + size, pos[1] - size]
+      ]
+      features = this._map.queryRenderedFeatures(bbox)
     } else {
-      features = this._map.queryRenderedFeatures(pos);
+      features = this._map.queryRenderedFeatures(pos)
     }
-    return features;
+    return features
   }
 
-  _onInteractiveStateChange({isDragging = false}) {
+  _onInteractiveStateChange({ isDragging = false }) {
     if (isDragging !== this.state.isDragging) {
-      this.setState({isDragging});
+      this.setState({ isDragging })
     }
   }
 
   // HOVER AND CLICK
   _getPos(event) {
-    const {offsetCenter: {x, y}} = event;
-    return [x, y];
+    const { offsetCenter: { x, y } } = event
+    return [x, y]
   }
 
   _onMouseMove(event) {
     if (!this.state.isDragging) {
-      const pos = this._getPos(event);
-      const features = this._getFeatures({pos, radius: this.props.clickRadius});
+      const pos = this._getPos(event)
+      const features = this._getFeatures({
+        pos,
+        radius: this.props.clickRadius
+      })
 
-      const isHovering = features && features.length > 0;
+      const isHovering = features && features.length > 0
       if (isHovering !== this.state.isHovering) {
-        this.setState({isHovering});
+        this.setState({ isHovering })
       }
 
       if (this.props.onHover) {
-        const viewport = new WebMercatorViewport(this.props);
-        event.lngLat = viewport.unproject(pos);
-        event.features = features;
+        const viewport = new WebMercatorViewport(this.props)
+        event.lngLat = viewport.unproject(pos)
+        event.features = features
 
-        this.props.onHover(event);
+        this.props.onHover(event)
       }
     }
   }
 
   _onMouseClick(event) {
     if (this.props.onClick) {
-      const pos = this._getPos(event);
-      const viewport = new WebMercatorViewport(this.props);
-      event.lngLat = viewport.unproject(pos);
-      event.features = this._getFeatures({pos, radius: this.props.clickRadius});
+      const pos = this._getPos(event)
+      const viewport = new WebMercatorViewport(this.props)
+      event.lngLat = viewport.unproject(pos)
+      event.features = this._getFeatures({
+        pos,
+        radius: this.props.clickRadius
+      })
 
-      this.props.onClick(event);
+      this.props.onClick(event)
     }
   }
 
   _eventCanvasLoaded(ref) {
-    this._eventCanvas = ref;
+    this._eventCanvas = ref
   }
 
   _staticMapLoaded(ref) {
-    this._map = ref;
+    this._map = ref
   }
 
   render() {
-    const {width, height, getCursor} = this.props;
+    const { width, height, getCursor } = this.props
 
     const eventCanvasStyle = {
       width,
       height,
       position: 'relative',
       cursor: getCursor(this.state)
-    };
+    }
 
-    return (
-      createElement('div', {
+    return createElement(
+      'div',
+      {
         key: 'map-controls',
         ref: this._eventCanvasLoaded,
         style: eventCanvasStyle
       },
-        createElement(StaticMap, Object.assign({}, this.props,
-          this._transitionManager && this._transitionManager.getViewportInTransition(),
+      createElement(
+        StaticMap,
+        Object.assign(
+          {},
+          this.props,
+          this._transitionManager &&
+            this._transitionManager.getViewportInTransition(),
           {
             visible: this._checkVisibilityConstraints(this.props),
             ref: this._staticMapLoaded,
             children: this.props.children
           }
-        ))
+        )
       )
-    );
+    )
   }
 }
 
-InteractiveMap.displayName = 'InteractiveMap';
-InteractiveMap.propTypes = propTypes;
-InteractiveMap.defaultProps = defaultProps;
-InteractiveMap.childContextTypes = childContextTypes;
+InteractiveMap.displayName = 'InteractiveMap'
+InteractiveMap.propTypes = propTypes
+InteractiveMap.defaultProps = defaultProps
+InteractiveMap.childContextTypes = childContextTypes
