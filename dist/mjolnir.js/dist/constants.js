@@ -1,0 +1,132 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.GESTURE_EVENT_ALIASES = exports.EVENT_RECOGNIZER_MAP = exports.INPUT_EVENT_TYPES = exports.BASIC_EVENT_ALIASES = exports.RECOGNIZER_FALLBACK_MAP = exports.RECOGNIZER_COMPATIBLE_MAP = exports.RECOGNIZERS = undefined;
+
+var _hammer = require('./utils/hammer');
+
+var _hammer2 = _interopRequireDefault(_hammer);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+// This module contains constants that must be conditionally required
+// due to `window`/`document` references downstream.
+var RECOGNIZERS = exports.RECOGNIZERS = _hammer2.default ? [[_hammer2.default.Rotate, { enable: false }], [_hammer2.default.Pinch, { enable: false }], [_hammer2.default.Swipe, { enable: false }], [_hammer2.default.Pan, { threshold: 0, enable: false }], [_hammer2.default.Press, { enable: false }], [_hammer2.default.Tap, { event: 'doubletap', taps: 2, enable: false }], [_hammer2.default.Tap, { enable: false }]] : null;
+
+// Recognize the following gestures even if a given recognizer succeeds
+// Copyright (c) 2017 Uber Technologies, Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+var RECOGNIZER_COMPATIBLE_MAP = exports.RECOGNIZER_COMPATIBLE_MAP = {
+  rotate: ['pinch']
+};
+
+// Recognize the folling gestures only if a given recognizer fails
+var RECOGNIZER_FALLBACK_MAP = exports.RECOGNIZER_FALLBACK_MAP = {
+  doubletap: ['tap']
+};
+
+/**
+ * Only one set of basic input events will be fired by Hammer.js:
+ * either pointer, touch, or mouse, depending on system support.
+ * In order to enable an application to be agnostic of system support,
+ * alias basic input events into "classes" of events: down, move, and up.
+ * See `_onBasicInput()` for usage of these aliases.
+ */
+var BASIC_EVENT_ALIASES = exports.BASIC_EVENT_ALIASES = {
+  pointerdown: 'pointerdown',
+  pointermove: 'pointermove',
+  pointerup: 'pointerup',
+  touchstart: 'pointerdown',
+  touchmove: 'pointermove',
+  touchend: 'pointerup',
+  mousedown: 'pointerdown',
+  mousemove: 'pointermove',
+  mouseup: 'pointerup'
+};
+
+var INPUT_EVENT_TYPES = exports.INPUT_EVENT_TYPES = {
+  KEY_EVENTS: ['keydown', 'keyup'],
+  MOUSE_EVENTS: ['mousedown', 'mousemove', 'mouseup', 'mouseleave'],
+  WHEEL_EVENTS: [
+  // Chrome, Safari
+  'wheel',
+  // IE
+  'mousewheel',
+  // legacy Firefox
+  'DOMMouseScroll']
+};
+
+/**
+ * "Gestural" events are those that have semantic meaning beyond the basic input event,
+ * e.g. a click or tap is a sequence of `down` and `up` events with no `move` event in between.
+ * Hammer.js handles these with its Recognizer system;
+ * this block maps event names to the Recognizers required to detect the events.
+ */
+var EVENT_RECOGNIZER_MAP = exports.EVENT_RECOGNIZER_MAP = {
+  tap: 'tap',
+  doubletap: 'doubletap',
+  press: 'press',
+  pinch: 'pinch',
+  pinchin: 'pinch',
+  pinchout: 'pinch',
+  pinchstart: 'pinch',
+  pinchmove: 'pinch',
+  pinchend: 'pinch',
+  pinchcancel: 'pinch',
+  rotate: 'rotate',
+  rotatestart: 'rotate',
+  rotatemove: 'rotate',
+  rotateend: 'rotate',
+  rotatecancel: 'rotate',
+  pan: 'pan',
+  panstart: 'pan',
+  panmove: 'pan',
+  panup: 'pan',
+  pandown: 'pan',
+  panleft: 'pan',
+  panright: 'pan',
+  panend: 'pan',
+  pancancel: 'pan',
+  swipe: 'swipe',
+  swipeleft: 'swipe',
+  swiperight: 'swipe',
+  swipeup: 'swipe',
+  swipedown: 'swipe'
+};
+
+/**
+ * Map gestural events typically provided by browsers
+ * that are not reported in 'hammer.input' events
+ * to corresponding Hammer.js gestures.
+ */
+var GESTURE_EVENT_ALIASES = exports.GESTURE_EVENT_ALIASES = {
+  click: 'tap',
+  dblclick: 'doubletap',
+  mousedown: 'pointerdown',
+  mousemove: 'pointermove',
+  mouseup: 'pointerup',
+  mouseleave: 'pointerleave'
+};
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uL3NyYy9jb25zdGFudHMuanMiXSwibmFtZXMiOlsiUkVDT0dOSVpFUlMiLCJSb3RhdGUiLCJlbmFibGUiLCJQaW5jaCIsIlN3aXBlIiwiUGFuIiwidGhyZXNob2xkIiwiUHJlc3MiLCJUYXAiLCJldmVudCIsInRhcHMiLCJSRUNPR05JWkVSX0NPTVBBVElCTEVfTUFQIiwicm90YXRlIiwiUkVDT0dOSVpFUl9GQUxMQkFDS19NQVAiLCJkb3VibGV0YXAiLCJCQVNJQ19FVkVOVF9BTElBU0VTIiwicG9pbnRlcmRvd24iLCJwb2ludGVybW92ZSIsInBvaW50ZXJ1cCIsInRvdWNoc3RhcnQiLCJ0b3VjaG1vdmUiLCJ0b3VjaGVuZCIsIm1vdXNlZG93biIsIm1vdXNlbW92ZSIsIm1vdXNldXAiLCJJTlBVVF9FVkVOVF9UWVBFUyIsIktFWV9FVkVOVFMiLCJNT1VTRV9FVkVOVFMiLCJXSEVFTF9FVkVOVFMiLCJFVkVOVF9SRUNPR05JWkVSX01BUCIsInRhcCIsInByZXNzIiwicGluY2giLCJwaW5jaGluIiwicGluY2hvdXQiLCJwaW5jaHN0YXJ0IiwicGluY2htb3ZlIiwicGluY2hlbmQiLCJwaW5jaGNhbmNlbCIsInJvdGF0ZXN0YXJ0Iiwicm90YXRlbW92ZSIsInJvdGF0ZWVuZCIsInJvdGF0ZWNhbmNlbCIsInBhbiIsInBhbnN0YXJ0IiwicGFubW92ZSIsInBhbnVwIiwicGFuZG93biIsInBhbmxlZnQiLCJwYW5yaWdodCIsInBhbmVuZCIsInBhbmNhbmNlbCIsInN3aXBlIiwic3dpcGVsZWZ0Iiwic3dpcGVyaWdodCIsInN3aXBldXAiLCJzd2lwZWRvd24iLCJHRVNUVVJFX0VWRU5UX0FMSUFTRVMiLCJjbGljayIsImRibGNsaWNrIiwibW91c2VsZWF2ZSJdLCJtYXBwaW5ncyI6Ijs7Ozs7OztBQW9CQTs7Ozs7Ozs7QUFFQTtBQUNBO0FBQ08sSUFBTSxvQ0FBYyxtQkFBUyxDQUNsQyxDQUFDLGlCQUFELEFBQVEsUUFBUSxFQUFDLFFBRGlCLEFBQ2xDLEFBQWdCLEFBQVMsVUFDekIsQ0FBQyxpQkFBRCxBQUFRLE9BQU8sRUFBQyxRQUZrQixBQUVsQyxBQUFlLEFBQVMsVUFDeEIsQ0FBQyxpQkFBRCxBQUFRLE9BQU8sRUFBQyxRQUhrQixBQUdsQyxBQUFlLEFBQVMsVUFDeEIsQ0FBQyxpQkFBRCxBQUFRLEtBQUssRUFBQyxXQUFELEFBQVksR0FBRyxRQUpNLEFBSWxDLEFBQWEsQUFBdUIsVUFDcEMsQ0FBQyxpQkFBRCxBQUFRLE9BQU8sRUFBQyxRQUxrQixBQUtsQyxBQUFlLEFBQVMsVUFDeEIsQ0FBQyxpQkFBRCxBQUFRLEtBQUssRUFBQyxPQUFELEFBQVEsYUFBYSxNQUFyQixBQUEyQixHQUFHLFFBTlQsQUFNbEMsQUFBYSxBQUFzQyxVQUNuRCxDQUFDLGlCQUFELEFBQVEsS0FBSyxFQUFDLFFBUFcsQUFBUyxBQU9sQyxBQUFhLEFBQVMsWUFQakIsQUFRSDs7QUFFSjtBQWxDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTs7QUFpQk8sSUFBTTtVQUNILENBREgsQUFBa0MsQUFDL0IsQUFBQztBQUQ4QixBQUN2Qzs7QUFHRjtBQUNPLElBQU07YUFDQSxDQUROLEFBQWdDLEFBQzFCLEFBQUM7QUFEeUIsQUFDckM7O0FBR0Y7Ozs7Ozs7QUFPTyxJQUFNO2VBQXNCLEFBQ3BCLEFBQ2I7ZUFGaUMsQUFFcEIsQUFDYjthQUhpQyxBQUd0QixBQUNYO2NBSmlDLEFBSXJCLEFBQ1o7YUFMaUMsQUFLdEIsQUFDWDtZQU5pQyxBQU12QixBQUNWO2FBUGlDLEFBT3RCLEFBQ1g7YUFSaUMsQUFRdEIsQUFDWDtXQVRLLEFBQTRCLEFBU3hCO0FBVHdCLEFBQ2pDOztBQVdLLElBQU07Y0FDQyxDQUFBLEFBQ1YsV0FGNkIsQUFDbkIsQUFFVixBQUVGO2dCQUFjLENBQUEsQUFDWixhQURZLEFBRVosYUFGWSxBQUdaLFdBUjZCLEFBS2pCLEFBSVosQUFFRjs7QUFFRTtBQUZZLEFBR1osU0FIWSxBQUNaO0FBR0E7QUFKWSxBQUtaO0FBQ0E7QUFqQkcsQUFBMEIsQUFXakI7QUFYaUIsQUFDL0I7O0FBb0JGOzs7Ozs7QUFNTyxJQUFNO09BQXVCLEFBQzdCLEFBQ0w7YUFGa0MsQUFFdkIsQUFDWDtTQUhrQyxBQUczQixBQUNQO1NBSmtDLEFBSTNCLEFBQ1A7V0FMa0MsQUFLekIsQUFDVDtZQU5rQyxBQU14QixBQUNWO2NBUGtDLEFBT3RCLEFBQ1o7YUFSa0MsQUFRdkIsQUFDWDtZQVRrQyxBQVN4QixBQUNWO2VBVmtDLEFBVXJCLEFBQ2I7VUFYa0MsQUFXMUIsQUFDUjtlQVprQyxBQVlyQixBQUNiO2NBYmtDLEFBYXRCLEFBQ1o7YUFka0MsQUFjdkIsQUFDWDtnQkFma0MsQUFlcEIsQUFDZDtPQWhCa0MsQUFnQjdCLEFBQ0w7WUFqQmtDLEFBaUJ4QixBQUNWO1dBbEJrQyxBQWtCekIsQUFDVDtTQW5Ca0MsQUFtQjNCLEFBQ1A7V0FwQmtDLEFBb0J6QixBQUNUO1dBckJrQyxBQXFCekIsQUFDVDtZQXRCa0MsQUFzQnhCLEFBQ1Y7VUF2QmtDLEFBdUIxQixBQUNSO2FBeEJrQyxBQXdCdkIsQUFDWDtTQXpCa0MsQUF5QjNCLEFBQ1A7YUExQmtDLEFBMEJ2QixBQUNYO2NBM0JrQyxBQTJCdEIsQUFDWjtXQTVCa0MsQUE0QnpCLEFBQ1Q7YUE3QkssQUFBNkIsQUE2QnZCO0FBN0J1QixBQUNsQzs7QUErQkY7Ozs7O0FBS08sSUFBTTtTQUF3QixBQUM1QixBQUNQO1lBRm1DLEFBRXpCLEFBQ1Y7YUFIbUMsQUFHeEIsQUFDWDthQUptQyxBQUl4QixBQUNYO1dBTG1DLEFBSzFCLEFBQ1Q7Y0FOSyxBQUE4QixBQU12QjtBQU51QixBQUNuQyIsImZpbGUiOiJjb25zdGFudHMuanMiLCJzb3VyY2VzQ29udGVudCI6WyIvLyBDb3B5cmlnaHQgKGMpIDIwMTcgVWJlciBUZWNobm9sb2dpZXMsIEluYy5cbi8vXG4vLyBQZXJtaXNzaW9uIGlzIGhlcmVieSBncmFudGVkLCBmcmVlIG9mIGNoYXJnZSwgdG8gYW55IHBlcnNvbiBvYnRhaW5pbmcgYSBjb3B5XG4vLyBvZiB0aGlzIHNvZnR3YXJlIGFuZCBhc3NvY2lhdGVkIGRvY3VtZW50YXRpb24gZmlsZXMgKHRoZSBcIlNvZnR3YXJlXCIpLCB0byBkZWFsXG4vLyBpbiB0aGUgU29mdHdhcmUgd2l0aG91dCByZXN0cmljdGlvbiwgaW5jbHVkaW5nIHdpdGhvdXQgbGltaXRhdGlvbiB0aGUgcmlnaHRzXG4vLyB0byB1c2UsIGNvcHksIG1vZGlmeSwgbWVyZ2UsIHB1Ymxpc2gsIGRpc3RyaWJ1dGUsIHN1YmxpY2Vuc2UsIGFuZC9vciBzZWxsXG4vLyBjb3BpZXMgb2YgdGhlIFNvZnR3YXJlLCBhbmQgdG8gcGVybWl0IHBlcnNvbnMgdG8gd2hvbSB0aGUgU29mdHdhcmUgaXNcbi8vIGZ1cm5pc2hlZCB0byBkbyBzbywgc3ViamVjdCB0byB0aGUgZm9sbG93aW5nIGNvbmRpdGlvbnM6XG4vL1xuLy8gVGhlIGFib3ZlIGNvcHlyaWdodCBub3RpY2UgYW5kIHRoaXMgcGVybWlzc2lvbiBub3RpY2Ugc2hhbGwgYmUgaW5jbHVkZWQgaW5cbi8vIGFsbCBjb3BpZXMgb3Igc3Vic3RhbnRpYWwgcG9ydGlvbnMgb2YgdGhlIFNvZnR3YXJlLlxuLy9cbi8vIFRIRSBTT0ZUV0FSRSBJUyBQUk9WSURFRCBcIkFTIElTXCIsIFdJVEhPVVQgV0FSUkFOVFkgT0YgQU5ZIEtJTkQsIEVYUFJFU1MgT1Jcbi8vIElNUExJRUQsIElOQ0xVRElORyBCVVQgTk9UIExJTUlURUQgVE8gVEhFIFdBUlJBTlRJRVMgT0YgTUVSQ0hBTlRBQklMSVRZLFxuLy8gRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UgQU5EIE5PTklORlJJTkdFTUVOVC4gSU4gTk8gRVZFTlQgU0hBTEwgVEhFXG4vLyBBVVRIT1JTIE9SIENPUFlSSUdIVCBIT0xERVJTIEJFIExJQUJMRSBGT1IgQU5ZIENMQUlNLCBEQU1BR0VTIE9SIE9USEVSXG4vLyBMSUFCSUxJVFksIFdIRVRIRVIgSU4gQU4gQUNUSU9OIE9GIENPTlRSQUNULCBUT1JUIE9SIE9USEVSV0lTRSwgQVJJU0lORyBGUk9NLFxuLy8gT1VUIE9GIE9SIElOIENPTk5FQ1RJT04gV0lUSCBUSEUgU09GVFdBUkUgT1IgVEhFIFVTRSBPUiBPVEhFUiBERUFMSU5HUyBJTlxuLy8gVEhFIFNPRlRXQVJFLlxuXG5pbXBvcnQgSGFtbWVyIGZyb20gJy4vdXRpbHMvaGFtbWVyJztcblxuLy8gVGhpcyBtb2R1bGUgY29udGFpbnMgY29uc3RhbnRzIHRoYXQgbXVzdCBiZSBjb25kaXRpb25hbGx5IHJlcXVpcmVkXG4vLyBkdWUgdG8gYHdpbmRvd2AvYGRvY3VtZW50YCByZWZlcmVuY2VzIGRvd25zdHJlYW0uXG5leHBvcnQgY29uc3QgUkVDT0dOSVpFUlMgPSBIYW1tZXIgPyBbXG4gIFtIYW1tZXIuUm90YXRlLCB7ZW5hYmxlOiBmYWxzZX1dLFxuICBbSGFtbWVyLlBpbmNoLCB7ZW5hYmxlOiBmYWxzZX1dLFxuICBbSGFtbWVyLlN3aXBlLCB7ZW5hYmxlOiBmYWxzZX1dLFxuICBbSGFtbWVyLlBhbiwge3RocmVzaG9sZDogMCwgZW5hYmxlOiBmYWxzZX1dLFxuICBbSGFtbWVyLlByZXNzLCB7ZW5hYmxlOiBmYWxzZX1dLFxuICBbSGFtbWVyLlRhcCwge2V2ZW50OiAnZG91YmxldGFwJywgdGFwczogMiwgZW5hYmxlOiBmYWxzZX1dLFxuICBbSGFtbWVyLlRhcCwge2VuYWJsZTogZmFsc2V9XVxuXSA6IG51bGw7XG5cbi8vIFJlY29nbml6ZSB0aGUgZm9sbG93aW5nIGdlc3R1cmVzIGV2ZW4gaWYgYSBnaXZlbiByZWNvZ25pemVyIHN1Y2NlZWRzXG5leHBvcnQgY29uc3QgUkVDT0dOSVpFUl9DT01QQVRJQkxFX01BUCA9IHtcbiAgcm90YXRlOiBbJ3BpbmNoJ11cbn07XG5cbi8vIFJlY29nbml6ZSB0aGUgZm9sbGluZyBnZXN0dXJlcyBvbmx5IGlmIGEgZ2l2ZW4gcmVjb2duaXplciBmYWlsc1xuZXhwb3J0IGNvbnN0IFJFQ09HTklaRVJfRkFMTEJBQ0tfTUFQID0ge1xuICBkb3VibGV0YXA6IFsndGFwJ11cbn07XG5cbi8qKlxuICogT25seSBvbmUgc2V0IG9mIGJhc2ljIGlucHV0IGV2ZW50cyB3aWxsIGJlIGZpcmVkIGJ5IEhhbW1lci5qczpcbiAqIGVpdGhlciBwb2ludGVyLCB0b3VjaCwgb3IgbW91c2UsIGRlcGVuZGluZyBvbiBzeXN0ZW0gc3VwcG9ydC5cbiAqIEluIG9yZGVyIHRvIGVuYWJsZSBhbiBhcHBsaWNhdGlvbiB0byBiZSBhZ25vc3RpYyBvZiBzeXN0ZW0gc3VwcG9ydCxcbiAqIGFsaWFzIGJhc2ljIGlucHV0IGV2ZW50cyBpbnRvIFwiY2xhc3Nlc1wiIG9mIGV2ZW50czogZG93biwgbW92ZSwgYW5kIHVwLlxuICogU2VlIGBfb25CYXNpY0lucHV0KClgIGZvciB1c2FnZSBvZiB0aGVzZSBhbGlhc2VzLlxuICovXG5leHBvcnQgY29uc3QgQkFTSUNfRVZFTlRfQUxJQVNFUyA9IHtcbiAgcG9pbnRlcmRvd246ICdwb2ludGVyZG93bicsXG4gIHBvaW50ZXJtb3ZlOiAncG9pbnRlcm1vdmUnLFxuICBwb2ludGVydXA6ICdwb2ludGVydXAnLFxuICB0b3VjaHN0YXJ0OiAncG9pbnRlcmRvd24nLFxuICB0b3VjaG1vdmU6ICdwb2ludGVybW92ZScsXG4gIHRvdWNoZW5kOiAncG9pbnRlcnVwJyxcbiAgbW91c2Vkb3duOiAncG9pbnRlcmRvd24nLFxuICBtb3VzZW1vdmU6ICdwb2ludGVybW92ZScsXG4gIG1vdXNldXA6ICdwb2ludGVydXAnXG59O1xuXG5leHBvcnQgY29uc3QgSU5QVVRfRVZFTlRfVFlQRVMgPSB7XG4gIEtFWV9FVkVOVFM6IFtcbiAgICAna2V5ZG93bicsXG4gICAgJ2tleXVwJ1xuICBdLFxuICBNT1VTRV9FVkVOVFM6IFtcbiAgICAnbW91c2Vkb3duJyxcbiAgICAnbW91c2Vtb3ZlJyxcbiAgICAnbW91c2V1cCcsXG4gICAgJ21vdXNlbGVhdmUnXG4gIF0sXG4gIFdIRUVMX0VWRU5UUzogW1xuICAgIC8vIENocm9tZSwgU2FmYXJpXG4gICAgJ3doZWVsJyxcbiAgICAvLyBJRVxuICAgICdtb3VzZXdoZWVsJyxcbiAgICAvLyBsZWdhY3kgRmlyZWZveFxuICAgICdET01Nb3VzZVNjcm9sbCdcbiAgXVxufTtcblxuLyoqXG4gKiBcIkdlc3R1cmFsXCIgZXZlbnRzIGFyZSB0aG9zZSB0aGF0IGhhdmUgc2VtYW50aWMgbWVhbmluZyBiZXlvbmQgdGhlIGJhc2ljIGlucHV0IGV2ZW50LFxuICogZS5nLiBhIGNsaWNrIG9yIHRhcCBpcyBhIHNlcXVlbmNlIG9mIGBkb3duYCBhbmQgYHVwYCBldmVudHMgd2l0aCBubyBgbW92ZWAgZXZlbnQgaW4gYmV0d2Vlbi5cbiAqIEhhbW1lci5qcyBoYW5kbGVzIHRoZXNlIHdpdGggaXRzIFJlY29nbml6ZXIgc3lzdGVtO1xuICogdGhpcyBibG9jayBtYXBzIGV2ZW50IG5hbWVzIHRvIHRoZSBSZWNvZ25pemVycyByZXF1aXJlZCB0byBkZXRlY3QgdGhlIGV2ZW50cy5cbiAqL1xuZXhwb3J0IGNvbnN0IEVWRU5UX1JFQ09HTklaRVJfTUFQID0ge1xuICB0YXA6ICd0YXAnLFxuICBkb3VibGV0YXA6ICdkb3VibGV0YXAnLFxuICBwcmVzczogJ3ByZXNzJyxcbiAgcGluY2g6ICdwaW5jaCcsXG4gIHBpbmNoaW46ICdwaW5jaCcsXG4gIHBpbmNob3V0OiAncGluY2gnLFxuICBwaW5jaHN0YXJ0OiAncGluY2gnLFxuICBwaW5jaG1vdmU6ICdwaW5jaCcsXG4gIHBpbmNoZW5kOiAncGluY2gnLFxuICBwaW5jaGNhbmNlbDogJ3BpbmNoJyxcbiAgcm90YXRlOiAncm90YXRlJyxcbiAgcm90YXRlc3RhcnQ6ICdyb3RhdGUnLFxuICByb3RhdGVtb3ZlOiAncm90YXRlJyxcbiAgcm90YXRlZW5kOiAncm90YXRlJyxcbiAgcm90YXRlY2FuY2VsOiAncm90YXRlJyxcbiAgcGFuOiAncGFuJyxcbiAgcGFuc3RhcnQ6ICdwYW4nLFxuICBwYW5tb3ZlOiAncGFuJyxcbiAgcGFudXA6ICdwYW4nLFxuICBwYW5kb3duOiAncGFuJyxcbiAgcGFubGVmdDogJ3BhbicsXG4gIHBhbnJpZ2h0OiAncGFuJyxcbiAgcGFuZW5kOiAncGFuJyxcbiAgcGFuY2FuY2VsOiAncGFuJyxcbiAgc3dpcGU6ICdzd2lwZScsXG4gIHN3aXBlbGVmdDogJ3N3aXBlJyxcbiAgc3dpcGVyaWdodDogJ3N3aXBlJyxcbiAgc3dpcGV1cDogJ3N3aXBlJyxcbiAgc3dpcGVkb3duOiAnc3dpcGUnXG59O1xuXG4vKipcbiAqIE1hcCBnZXN0dXJhbCBldmVudHMgdHlwaWNhbGx5IHByb3ZpZGVkIGJ5IGJyb3dzZXJzXG4gKiB0aGF0IGFyZSBub3QgcmVwb3J0ZWQgaW4gJ2hhbW1lci5pbnB1dCcgZXZlbnRzXG4gKiB0byBjb3JyZXNwb25kaW5nIEhhbW1lci5qcyBnZXN0dXJlcy5cbiAqL1xuZXhwb3J0IGNvbnN0IEdFU1RVUkVfRVZFTlRfQUxJQVNFUyA9IHtcbiAgY2xpY2s6ICd0YXAnLFxuICBkYmxjbGljazogJ2RvdWJsZXRhcCcsXG4gIG1vdXNlZG93bjogJ3BvaW50ZXJkb3duJyxcbiAgbW91c2Vtb3ZlOiAncG9pbnRlcm1vdmUnLFxuICBtb3VzZXVwOiAncG9pbnRlcnVwJyxcbiAgbW91c2VsZWF2ZTogJ3BvaW50ZXJsZWF2ZSdcbn07XG4iXX0=
